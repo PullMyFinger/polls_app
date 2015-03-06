@@ -14,8 +14,4 @@ class User < ActiveRecord::Base
   primary_key: :id,
   class_name: :Poll
   )
-
-  def respondent_has_not_already_answered_question
-
-  end
 end

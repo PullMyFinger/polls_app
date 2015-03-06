@@ -20,4 +20,20 @@ class Question < ActiveRecord::Base
   through: :answer_choices,
   source: :responses
   )
+
+  def results
+    answers = AnswerChoice
+      .select('answer_choices.answer, COUNT(responses.id) AS david_rules')
+      .joins('LEFT OUTER JOIN responses ON responses.answer_choice_id = answer_choices.id')
+      .joins('LEFT OUTER JOIN questions ON questions.id = answer_choices.question_id')
+      .where('questions.id' => self.id)
+      .group('answer_choices.id')
+
+    results_hash = {}
+    answers.each do |answer|
+      results_hash[answer.answer] = answer.david_rules
+    end
+
+    results_hash
+  end
 end
