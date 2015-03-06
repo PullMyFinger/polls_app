@@ -1,3 +1,14 @@
+# == Schema Information
+#
+# Table name: responses
+#
+#  id               :integer          not null, primary key
+#  user_id          :integer
+#  answer_choice_id :integer
+#  created_at       :datetime
+#  updated_at       :datetime
+#
+
 class Response < ActiveRecord::Base
   #validate :respondent_has_not_already_answered_question
   #validate :respondent_is_not_author
@@ -22,6 +33,12 @@ class Response < ActiveRecord::Base
   source: :question
   )
 
+  has_one(
+  :poll,
+  through: :question,
+  source: :poll
+  )
+
   def sibling_responses
     if self.id.nil?
       question.responses
@@ -37,7 +54,7 @@ class Response < ActiveRecord::Base
   end
 
   def respondent_is_not_author
-    if question.poll.user.id == self.user_id
+    if poll.user_id == self.user_id
       errors[:base] << "Stop cheating you fuck!!"
     end
   end
